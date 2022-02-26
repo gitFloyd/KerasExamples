@@ -1,0 +1,12 @@
+body {
+	background-color: black;
+	color: #eee;
+}
+
+body > main {
+	padding: 20px;
+}
+
+a, a:visited {
+	color: #eee;
+}
