@@ -8,5 +8,6 @@ body > main {
 }
 
 a, a:visited {
-	color: #eee;
+	color: rgb(162, 171, 223);
+	text-decoration: none;
 }

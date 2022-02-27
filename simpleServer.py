@@ -27,7 +27,7 @@ class HTMLTemplate:
 		# The route "/" will display the default content set here.
 		'content': '<main>' +
 			'<h2>Welcome to SimpleServer Framework</h2>' +
-			'Navigate to: <ul>' + ''.join(['<li><a href="/page/{}">{}</a></li>'.format(str[5:-3],str) for str in Global.Pages()]) + '</ul>' +
+			'Navigate to: <ul>' + ''.join(['<li><a href="/page/{0}">{0}</a></li>'.format(str[5:-3]) for str in Global.Pages()]) + '</ul>' +
 			'</main>'
 	}
 	Name = 'html.tpl'
