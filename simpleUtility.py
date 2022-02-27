@@ -1,11 +1,16 @@
 
+
+
+
+
+#######################################
+# function: dump()
+#
 tabchar = '&nbsp;&nbsp;&nbsp;'
 newlinechar = '<br>'
 if __name__ == '__main__':
 	tabchar = '   '
 	newlinechar = '\n'
-
-
 def _dump(var, depth = 0, prefix = ''):
 	tab = ''.join([tabchar for num in range(0,depth)])
 	typename = type(var).__name__
@@ -32,3 +37,38 @@ def _dump(var, depth = 0, prefix = ''):
 
 def dump(var):
 	print(_dump(var), newlinechar)
+#
+# END OF dump()
+#######################################
+
+
+#######################################
+# printbr()
+# 
+# converts newline characters to <br>
+#
+def printbr(var):
+	from io import StringIO
+	from contextlib import redirect_stdout
+
+	output = StringIO()
+	with redirect_stdout(output):
+		print(var)
+	print(output.getvalue().replace('\r\n','<br>').replace('\n','<br>'))
+#
+# END OF printbr()
+#######################################
+
+
+#######################################
+# has_tf_and_gpu()
+#
+# Is tensorflow available and does it
+# have access to the gpu?
+#
+def has_tf_and_gpu():
+	import tensorflow as tf
+	return tf.test.is_gpu_available()
+#
+# END OF has_tf_and_gpu()
+#######################################
