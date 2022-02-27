@@ -6,37 +6,41 @@
 #######################################
 # function: dump()
 #
-tabchar = '&nbsp;&nbsp;&nbsp;'
-newlinechar = '<br>'
-if __name__ == '__main__':
-	tabchar = '   '
-	newlinechar = '\n'
-def _dump(var, depth = 0, prefix = ''):
-	tab = ''.join([tabchar for num in range(0,depth)])
-	typename = type(var).__name__
-	if typename in ('int', 'str', 'float', 'float64'):
-		return tab + prefix + str(var) + newlinechar
-	elif typename == 'list' or typename == 'tuple' or typename == 'set' or typename == 'ndarray':
-		brace = '['
-		endbrace = ']'
-		if typename == 'tuple':
-			brace = '('
-			endbrace = ')'
-		elif typename == 'set':
-			brace = '{'
-			endbrace = '}'
-		output = tab + prefix + brace + newlinechar
-		output += ''.join([_dump(value, depth+1) for value in var])
-		output += tab +endbrace + newlinechar
-		return output
-	elif typename == 'dict':
-		output = tab + prefix + '{' + newlinechar
-		output += ''.join([_dump(var[key], depth+1, key + ': ') for key in var.keys()])
-		output += tab + '}' + newlinechar
-		return output
+class _dump:
+	def __init__(self, tab_size):
+		if __name__ == '__main__':
+			self.tabchar = ' ' * tab_size
+			self.newlinechar = '\n'
+		else:
+			self.tabchar = '&nbsp;' * tab_size
+			self.newlinechar = '<br>'
+	
+	def execute(self, var, depth = 0, prefix = ''):
+		tab = ''.join([self.tabchar for num in range(0,depth)])
+		typename = type(var).__name__
+		if typename in ('int', 'str', 'float', 'float64'):
+			return tab + prefix + str(var) + self.newlinechar
+		elif typename == 'list' or typename == 'tuple' or typename == 'set' or typename == 'ndarray':
+			brace = '['
+			endbrace = ']'
+			if typename == 'tuple':
+				brace = '('
+				endbrace = ')'
+			elif typename == 'set':
+				brace = '{'
+				endbrace = '}'
+			output = tab + prefix + brace + self.newlinechar
+			output += ''.join([self.execute(value, depth+1) for value in var])
+			output += tab +endbrace + self.newlinechar
+			return output
+		elif typename == 'dict':
+			output = tab + prefix + '{' + self.newlinechar
+			output += ''.join([self.execute(var[key], depth+1, key + ': ') for key in var.keys()])
+			output += tab + '}' + self.newlinechar
+			return output
 
-def dump(var):
-	print(_dump(var), newlinechar)
+def dump(var, tab_size = 4):
+	print(_dump(tab_size).execute(var))
 #
 # END OF dump()
 #######################################
