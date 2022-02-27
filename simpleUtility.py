@@ -14,9 +14,9 @@ if __name__ == '__main__':
 def _dump(var, depth = 0, prefix = ''):
 	tab = ''.join([tabchar for num in range(0,depth)])
 	typename = type(var).__name__
-	if typename == 'int' or typename == 'str':
+	if typename in ('int', 'str', 'float', 'float64'):
 		return tab + prefix + str(var) + newlinechar
-	elif typename == 'list' or typename == 'tuple' or typename == 'set':
+	elif typename == 'list' or typename == 'tuple' or typename == 'set' or typename == 'ndarray':
 		brace = '['
 		endbrace = ']'
 		if typename == 'tuple':
