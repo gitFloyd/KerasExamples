@@ -16,7 +16,7 @@ class HTMLTemplate:
 		'title': 'My App',
 
 		# Either None or a list of stylesheet filenames
-		'css': ['test.css'],
+		'css': ['base.css','test.css'],
 
 		# Either None or a list of javascript filenames
 		'javascript': ['test.js'],

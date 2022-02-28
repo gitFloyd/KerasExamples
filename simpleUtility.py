@@ -1,10 +1,14 @@
-
+from io import StringIO 
+import sys
 
 
 
 
 #######################################
-# function: dump()
+# function: dump(var)
+# Input: one of the following -- str, int, list, tuple, set, dict, Numpy Array
+# Return: none
+# This function takes a list (or tuple, set, ...) and pretty prints it.
 #
 class _dump:
 	def __init__(self, tab_size):
@@ -47,18 +51,80 @@ def dump(var, tab_size = 4):
 
 
 #######################################
-# printbr()
-# 
-# converts newline characters to <br>
+# class TextWrapper()
+# Inherited by Hide and Pre
+#
+class TextWrapper():
+	def __init__(self, tagname, classList=''):
+		self.tagname = tagname
+		self.classAttribute = '';
+		if len(classList) > 0:
+			self.classAttribute = ' class="{}"'.format(classList)
+	def __enter__(self):
+		print('<{}{}>'.format(self.tagname, self.classAttribute))
+	def __exit__(self, *args):
+		print('</{}>'.format(self.tagname))
+#
+# END OF class Hide()
+#######################################
+
+
+#######################################
+# class Hide()
+# Some library functions leak output
+# to stdout. Use this class to hide
+# that output.
+# Usage:
+# with Hide():
+# 	# invoke leaky function
+#
+class Hide(TextWrapper):
+	def __init__(self):
+		super().__init__('div', 'hidden')
+#
+# END OF class Hide()
+#######################################
+
+
+#######################################
+# class Pre()
+# Used to wrap some output in <pre> and
+# </pre> tags.
+# Usage:
+# with Pre():
+# 	# code that outputs text
+# 	# to stdout
+#
+class Pre(TextWrapper):
+	def __init__(self):
+		super().__init__('pre')
+#
+# END OF class Pre()
+#######################################
+
+
+#######################################
+# nl2br(str)
+# Input: a string to convert \n or \r\n to <br>
+# Return: the converted string
+# This function converts newline characters to <br>
+#
+def nl2br(var):
+	return var.replace('\r\n','<br>').replace('\n','<br>')
+#
+# END OF nl2br()
+#######################################
+
+
+#######################################
+# printbr(str)
+# Input: a string to convert \n or \r\n to <br>
+# Return: none
+# This function converts newline characters to <br>
+# and then invokes print(str_with_br)
 #
 def printbr(var):
-	from io import StringIO
-	from contextlib import redirect_stdout
-
-	output = StringIO()
-	with redirect_stdout(output):
-		print(var)
-	print(output.getvalue().replace('\r\n','<br>').replace('\n','<br>'))
+	print(nl2br(var))
 #
 # END OF printbr()
 #######################################
@@ -67,6 +133,7 @@ def printbr(var):
 #######################################
 # has_tf_and_gpu()
 #
+# Return: bool
 # Is tensorflow available and does it
 # have access to the gpu?
 #
