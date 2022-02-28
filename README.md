@@ -13,7 +13,7 @@ To access the home webpage, navigate to http://localhost:8082
 
 #### Adding scripts
 To add python scripts as pages to the website, do the following:<br>
-In the same folder as simpleServer.py, add your python script. It must be named according to the convention that the name starts with "page_". Therfore, if I want to add a script "Test1", I would name the file "page_Test1.py". For each "page_&lt;name&rt;.py" script, the home page will display a link to that page.
+In the same folder as simpleServer.py, add your python script. It must be named according to the convention that the name starts with "page_". Therfore, if I want to add a script "Test1", I would name the file "page_Test1.py". For each "page_&lt;name&gt;.py" script, the home page will display a link to that page.
 
 ## Additional utilities
 #### About simpleUtility
@@ -27,9 +27,9 @@ Return: none<br>
 This function takes a list (or tuple, set, ...) and pretty prints it.
 
 #### printbr(str)
-Input: a string to convert \n or \r\n to &lt;br&rt;<br>
+Input: a string to convert \n or \r\n to &lt;br&gt;<br>
 Return: none
-This function converts newline characters to &lt;br&rt;<br>
+This function converts newline characters to &lt;br&gt;<br>
 and then invokes print(str_with_br)
 
 #### has_tf_and_gpu()
@@ -46,8 +46,8 @@ Is tensorflow available and does it have access to the gpu?
 	- Currently, it has .hidden
 - simpleUtility
 	- Add TextWrapper class. It facilitates wrapping outputted text in a specified HTML tag. It optionally takes an HTMLElement class attribute. If adding the classes foo and bar, simply pass in "foo bar".
-	- Add Hide and Pre classes which inherit from TextWrapper. Hide puts outputted text in a hidden div, and Pre puts outtputted text inside of &lt;pre&rt; tags.
-	- nl2br(text) function added. Previously, printbr() converted \n and \r\n to &lt;br&rt; and printed the results right away. Now, nl2br() handles the conversion. Then printbr() just does the printing. printbr() is still used as before. It is only the internal code that changed.
+	- Add Hide and Pre classes which inherit from TextWrapper. Hide puts outputted text in a hidden div, and Pre puts outtputted text inside of &lt;pre&gt; tags.
+	- nl2br(text) function added. Previously, printbr() converted \n and \r\n to &lt;br&gt; and printed the results right away. Now, nl2br() handles the conversion. Then printbr() just does the printing. printbr() is still used as before. It is only the internal code that changed.
 	- Code for a Keras tutorial was added.
 		- Filename: page_First Keras Tutorial.py
 		- Find the tutorial here: https://machinelearningmastery.com/tutorial-first-neural-network-python-keras/
