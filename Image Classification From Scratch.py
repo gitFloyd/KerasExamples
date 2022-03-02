@@ -3,23 +3,60 @@
 # Installation errors?
 # See: https://github.com/XifengGuo/CapsNet-Keras/issues/25#issuecomment-515690929
 
-# Note the ds_path variable. Point it to your PetImages dataset.
-
 import tensorflow as tf
-
 keras = tf.keras
 layers = keras.layers
 preprocessing = keras.preprocessing
+import matplotlib.pyplot as plt
+import random
+import simpleUtilities
+su = simpleUtilities.su
+
+# Point this to your PetImages dataset.
+ds_path = "D:\Web\Python\datasets\kagglecatsanddogs_3367a\PetImages"
+
+# Use a smaller dataset to test changes to this code.
+#ds_path = "D:\Web\Python\datasets\kagglecatsanddogs_3367a-lite\PetImages"
+
+# It took a little over two minutes for each epoch on my machine.
+epochs = 2
+
+# For each: show an image and the model's prediction of cat or dog for that image.
+how_many_validation_results = 10
+
+if (su.YesNo('Do you want to remove corrupted images from the dataset?')):
+	import os
+	num_skipped = 0
+	for folder_name in ("Cat", "Dog"):
+		folder_path = os.path.join(ds_path, folder_name)
+		for fname in os.listdir(folder_path):
+			fpath = os.path.join(folder_path, fname)
+			try:
+				fobj = open(fpath, "rb")
+				is_jfif = tf.compat.as_bytes("JFIF") in fobj.peek(10)
+			finally:
+				fobj.close()
+
+			if not is_jfif:
+				num_skipped += 1
+				# Delete corrupted image
+				os.remove(fpath)
+
+	print("Deleted %d images" % num_skipped)
+
 
 image_size = (180, 180)
 batch_size = 32
-ds_path = "D:\Web\Python\datasets\kagglecatsanddogs_3367a\PetImages"
+random.seed()
+ds_seed = random.randrange(1000000000)
 
+# https://keras.io/api/data_loading/
+# https://keras.io/api/data_loading/image/#image_dataset_from_directory-function
 train_ds = preprocessing.image_dataset_from_directory(
 	ds_path,
-	validation_split=0.2,
+	validation_split=0.2, # Optional float between 0 and 1, fraction of data to reserve for validation.
 	subset='training',
-	seed=1337,
+	seed=ds_seed,
 	image_size=image_size,
 	batch_size=batch_size
 )
@@ -27,23 +64,24 @@ val_ds = preprocessing.image_dataset_from_directory(
 	ds_path,
 	validation_split=0.2,
 	subset='validation',
-	seed=1337,
+	seed=ds_seed,
 	image_size=image_size,
 	batch_size=batch_size
 )
 
-# Visualize nine of the images:
-# import matplotlib.pyplot as plt
-# 
-# plt.figure(figsize=(10, 10))
-# for images, labels in train_ds.take(1):
-#	 for i in range(9):
-#		 ax = plt.subplot(3, 3, i + 1)
-#		 plt.imshow(images[i].numpy().astype("uint8"))
-#		 plt.title(int(labels[i]))
-#		 plt.axis("off")
-# plt.show()
 
+
+
+# Visualize nine of the images:
+if (su.YesNo('Do you want to visualize nine of the images?')):
+	plt.figure(figsize=(10, 10))
+	for images, labels in train_ds.take(1):
+		for i in range(9):
+			ax = plt.subplot(3, 3, i + 1)
+			plt.imshow(images[i].numpy().astype("uint8"))
+			plt.title(int(labels[i]))
+			plt.axis("off")
+	plt.show()
 
 
 
@@ -118,7 +156,7 @@ def make_model(input_shape, num_classes):
 model = make_model(input_shape=image_size + (3,), num_classes=2)
 keras.utils.plot_model(model, show_shapes=True)
 
-epochs = 1
+
 
 callbacks = [
 	keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"),
@@ -132,15 +170,23 @@ model.fit(
 	train_ds, epochs=epochs, callbacks=callbacks, validation_data=val_ds,
 )
 
-img = keras.preprocessing.image.load_img(
-	ds_path + "/Cat/6779.jpg", target_size=image_size
-)
-img_array = keras.preprocessing.image.img_to_array(img)
-img_array = tf.expand_dims(img_array, 0)  # Create batch axis
+#img = keras.preprocessing.image.load_img(
+#	ds_path + "/Cat/6779.jpg", target_size=image_size
+#)
+for images, labels in val_ds.take(1):
+	for i in range(how_many_validation_results):
+		img_array = keras.preprocessing.image.img_to_array(images[i])
+		img_array = tf.expand_dims(img_array, 0)  # Create batch axis
 
-predictions = model.predict(img_array)
-score = predictions[0]
-print(
-	"This image is %.2f percent cat and %.2f percent dog."
-	% (100 * (1 - score), 100 * score)
-)
+		predictions = model.predict(img_array)
+		score = predictions[0]
+		print(
+			"This image is %.2f percent cat and %.2f percent dog."
+			% (100 * (1 - score), 100 * score)
+		)
+		
+		plt.imshow(images[i].numpy().astype("uint8"))
+		plt.title(int(labels[i]))
+		plt.axis("off")
+		plt.show()
+
